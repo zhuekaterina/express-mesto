@@ -13,7 +13,12 @@ const getUsers = (req, res) => getDataFromFile(dataPath)
   .catch(() => res.status(500).send({ message: 'Ошибка сервера' }));
 
 const getProfile = (req, res) => getDataFromFile(dataPath)
-  .then((users) => users.find((user) => user._id === req.params._id))
+  .then((users) => {
+    if (users === undefined) {
+      return res.status(404).send({ message: 'Файл не найден' });
+    }
+    return users.find((user) => user._id === req.params._id);
+  })
   .then((user) => {
     if (!user) {
       return res.status(404).send({ message: 'Нет пользователя с таким id' });
