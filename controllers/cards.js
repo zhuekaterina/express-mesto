@@ -12,7 +12,6 @@ const createCard = (req, res) => {
     name,
     link,
     owner: req.user._id,
-    createdAt: Date.now(),
   })
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
@@ -27,13 +26,14 @@ const createCard = (req, res) => {
 const deleteCard = (req, res) => {
   const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
-    .then((card) => {
-      if (!card) {
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'CastError') {
         res.status(404).send({ message: 'Карточка с таким id не найдена' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
       }
-      return res.status(200).send({ data: card });
-    })
-    .catch(() => res.status(500).send({ message: 'Ошибка сервера' }));
+    });
 };
 
 const likeCard = (req, res) => {
@@ -42,13 +42,14 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'CastError') {
         res.status(404).send({ message: 'Карточка с таким id не найдена' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
       }
-      return res.status(200).send({ data: card });
-    })
-    .catch(() => res.status(500).send({ message: 'Ошибка сервера' }));
+    });
 };
 
 const dislikeCard = (req, res) => {
@@ -57,13 +58,14 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'CastError') {
         res.status(404).send({ message: 'Карточка с таким id не найдена' });
+      } else {
+        res.status(500).send({ message: 'Ошибка сервера' });
       }
-      return res.status(200).send({ data: card });
-    })
-    .catch(() => res.status(500).send({ message: 'Ошибка сервера' }));
+    });
 };
 
 module.exports = {

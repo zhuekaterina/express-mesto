@@ -11,13 +11,11 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 });
 
 app.use(bodyParser.json());
-const path = require('path');
 const usersRouter = require('./routes/users.js');
 const cardsRouter = require('./routes/cards.js');
 
 const PORT = 3000;
 
-app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   req.user = {
     _id: '5fdc9d8a5a41140c19ede408',
